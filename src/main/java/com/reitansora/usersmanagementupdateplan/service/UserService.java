@@ -55,23 +55,19 @@ public class UserService {
      * @throws ResponseStatusException if the plan is not found
      */
     public UserResponse updateUserPlan(String requestId, String newPlanName) {
-        // 1) Busca el usuario por userId
         UserEntity userEntity = userRepository.findByUserId(requestId)
                 .orElseThrow(() ->
                         new ResponseStatusException(HttpStatus.NOT_FOUND,
                                 "User not found with id: " + requestId));
 
-        // 2) Busca el PlanEntity por nombre
         PlanEntity plan = planRepository.findByName(newPlanName)
                 .orElseThrow(() ->
                         new ResponseStatusException(HttpStatus.BAD_REQUEST,
                                 "Plan not found: " + newPlanName));
 
-        // 3) Asigna y guarda
         userEntity.setPlan(plan);
         UserEntity saved = userRepository.save(userEntity);
 
-        // 4) Retorna el UserResponse
         return convertToUserResponse(saved);
     }
 
